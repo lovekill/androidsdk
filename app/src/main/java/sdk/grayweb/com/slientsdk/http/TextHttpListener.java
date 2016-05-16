@@ -34,7 +34,7 @@ public abstract class TextHttpListener implements IHttpListener,
 			Log.e("TextHttpListener", text);
 			JSONObject jsonObject = new JSONObject(text);
 			if (jsonObject.optInt("code")==0) {
-				onSuccess(jsonObject.optString("data"));
+				onSuccess(text);
 			}else {
 				Log.e(TAG,"api fail erorCode="+jsonObject.optInt("code"));
 			}

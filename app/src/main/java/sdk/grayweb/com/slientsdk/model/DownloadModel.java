@@ -9,12 +9,19 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "download")
 public class DownloadModel {
     @DatabaseField
+    public String name ;
+    @DatabaseField
     public String packagename ;
     @DatabaseField
     public String downloadpath ;
     @DatabaseField
-    public long downloadtime ;
+    public  int status ;
+    @DatabaseField
+    public int downloadtime ;
+    public  int needopentime ;
     @DatabaseField
     public int level ;
+    @DatabaseField
+    public int price ;
     public DownloadModel(){}
 }

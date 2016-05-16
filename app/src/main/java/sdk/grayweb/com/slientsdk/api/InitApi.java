@@ -10,14 +10,14 @@ public class InitApi extends AbstractApi{
     public String imsi ;
     public String installApp ;
     public String phoneName ;
-    public int first =1;
+    public int chanelid  ;
     @Override
     protected String getPath() {
-        return null;
+        return "init";
     }
 
     @Override
     public HttpMethed getMethed() {
-        return HttpMethed.GET;
+        return HttpMethed.POST;
     }
 }

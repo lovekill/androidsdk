@@ -26,8 +26,7 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.zhuangyue.sdklib.api.AbstractApi;
-import com.zhuangyue.sdklib.js.InJavaScriptLocalObj;
+import sdk.grayweb.com.slientsdk.api.AbstractApi;
 
 
 public class HttpEngine extends AsyncTask<Object, Object, byte[]> {
@@ -78,37 +77,17 @@ public class HttpEngine extends AsyncTask<Object, Object, byte[]> {
 				e.printStackTrace();
 			} finally {
 				httpGet.abort();
-				com.zhuangyue.sdklib.http.HttpClient.finishRequest(api);
 			}
 		} else {
 			String pString = URLEncodedUtils.format(api.getRequestParams(),
 					"utf-8");
 			Log.e(TAG, "POST:" + api.getApiUrl() + "?" + pString);
 			HttpPost post = new HttpPost(api.getApiUrl());
-			if (InJavaScriptLocalObj.sessionid.length() > 0) {
-				post.setHeader("Cookie", "sid="
-						+ InJavaScriptLocalObj.sessionid);
-				// post.addHeader("sid", InJavaScriptLocalObj.sessionid);
-			}
 			try {
 				post.setEntity(new UrlEncodedFormEntity(api.getRequestParams(),
 						"utf-8"));
 				HttpResponse response;
-				if (InJavaScriptLocalObj.sessionid.length() > 0) {
-					response = httpClient.execute(post);
-				} else {
-					if (localContext != null) {
-						CookieStore c = (CookieStore) localContext
-								.getAttribute(ClientContext.COOKIE_STORE);
-						if (c != null) {
-							for (int i = 0; i < c.getCookies().size(); i++) {
-								Log.e(TAG, "Local cookie befor: "
-										+ c.getCookies().get(i));
-							}
-						}
-					}
 					response = httpClient.execute(post, localContext);
-				}
 				// 获取cookie中的各种信息
 
 				List<Cookie> cookies = ((DefaultHttpClient) httpClient)
@@ -140,7 +119,6 @@ public class HttpEngine extends AsyncTask<Object, Object, byte[]> {
 				return null;
 			} finally {
 				post.abort();
-				com.zhuangyue.sdklib.http.HttpClient.finishRequest(api);
 			}
 		}
 		return null;

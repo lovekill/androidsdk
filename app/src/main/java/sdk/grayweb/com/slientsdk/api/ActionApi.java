@@ -11,9 +11,8 @@ import sdk.grayweb.com.slientsdk.util.DivesUtil;
 public class ActionApi extends AbstractApi {
     public String imei ;
     public String packageName ;
-    public int status ;
     public int type ;
-    public ActionApi(Context context,String packageName,int status,Action action){
+    public ActionApi(Context context,String packageName,Action action){
         this.imei= DivesUtil.getInstance(context).getDeviceCode();
         switch (action){
             case DOWNLOAD:
@@ -30,11 +29,11 @@ public class ActionApi extends AbstractApi {
     }
     @Override
     protected String getPath() {
-        return null;
+        return "action";
     }
 
     @Override
     public HttpMethed getMethed() {
-        return HttpMethed.GET;
+        return HttpMethed.POST;
     }
 }
