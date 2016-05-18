@@ -58,6 +58,15 @@ public class InitAction extends AbstractAction {
         return 1;
     }
 
+    public List<ApkModel> getAllApkModel(){
+        try {
+            return  apkModelDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null ;
+    }
+
     private String getInstallAppString() {
         StringBuilder sb = new StringBuilder();
         for (InstallApk apk :

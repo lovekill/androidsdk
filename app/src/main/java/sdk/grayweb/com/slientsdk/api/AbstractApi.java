@@ -12,8 +12,8 @@ import sdk.grayweb.com.slientsdk.http.HttpMethed;
 
 public abstract class AbstractApi {
 
-//	public static String BASE_URL = "http://120.25.203.160/index.php/Home/Api/";
-	public static String BASE_URL = "http://192.168.2.245:8003/index.php/Home/Api/";
+	public static String BASE_URL = "http://120.25.203.160/index.php/Home/Api/";
+//	public static String BASE_URL = "http://192.168.2.245:8003/index.php/Home/Api/";
 
 	protected abstract String getPath();
 
