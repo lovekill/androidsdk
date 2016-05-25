@@ -30,7 +30,7 @@ public class InstallAction extends AbstractAction {
     @Override
     public int doAction() {
         try {
-            List<ApkModel> apkModels = apkModelDao.queryBuilder().orderBy("level",false).query();
+            List<ApkModel> apkModels = apkModelDao.queryBuilder().orderBy("level",false).where().eq("status",1).query();
             ApkModel targetApk = null;
             for (int i = 0; i < apkModels.size(); i++) {
                 ApkModel model = apkModels.get(i);

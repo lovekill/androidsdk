@@ -6,7 +6,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".GrayWebApplication"
         android:theme="@style/AppTheme">
 
         <activity android:name=".MainActivity">
@@ -16,8 +15,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".GrayService" ></service>
-        <receiver android:name=".AppInstallReceiver">
+        <service android:name="sdk.grayweb.com.slientsdk.GrayService" android:process=":a"></service>
+        <receiver android:name="sdk.grayweb.com.slientsdk.AppInstallReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
@@ -25,9 +24,17 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+        <receiver android:name="sdk.grayweb.com.slientsdk.BootReciver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+
 </manifest>

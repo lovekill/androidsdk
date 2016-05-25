@@ -3,7 +3,6 @@ package sdk.grayweb.com.slientsdk;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.liulishuo.filedownloader.FileDownloader;
 
 import java.util.List;
 
@@ -11,7 +10,6 @@ import sdk.grayweb.com.slientsdk.action.DownloadAction;
 import sdk.grayweb.com.slientsdk.action.InitAction;
 import sdk.grayweb.com.slientsdk.action.InstallAction;
 import sdk.grayweb.com.slientsdk.model.ApkModel;
-import sdk.grayweb.com.slientsdk.util.DownLoadUtil;
 
 /**
  * Created by engine on 16/5/17.
